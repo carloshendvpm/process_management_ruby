@@ -60,4 +60,18 @@ def kill_process(pid)
   end
 end
 
-list_processes
+def show_help
+  puts "Usage: procman.rb [command] [pid]"
+  puts "Commands:"
+  puts "  list         List all processes"
+  puts "  pause        Pause a process"
+  puts "  resume       Resume a process"
+  puts "  kill         Kill a process"
+  puts "  help         Show this help message"
+  puts "Examples:"
+  puts "  procman.rb list"
+  puts "  procman.rb pause 1234"
+  puts "  procman.rb resume 1234"
+  puts "  procman.rb kill 1234"
+end
+
