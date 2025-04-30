@@ -1,4 +1,21 @@
 #!/usr/bin/env ruby
+#
+# ProcManRuby - Simple Process Manager
+# This script allows you to manage processes on a Unix-like system.
+# It provides functionality to list, pause, resume, and kill processes.
+# It also logs actions to a file.
+# 
+
+LOG_FILE = 'procman.log'
+
+def log_action(action, pid = nil)
+  timestamp = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+  log_message = "#{timestamp} - #{action}"
+  log_message += " - PID: #{pid}" if pid
+  File.open(LOG_FILE, 'a') do |log|
+    log.puts(log_message)
+  end
+end
 
 def process_exists?(pid)
   begin
@@ -12,6 +29,7 @@ end
 def list_processes
   command = "ps -eo pid,user,%cpu,%mem,etime,state,comm"
   output = `#{command}`
+  log_action("Listagem de processos")
   puts output
 end
 
@@ -20,13 +38,17 @@ def pause_process(pid)
     begin
       Process.kill("STOP", pid.to_i)
       puts "Paused process with PID #{pid}"
+      log_action("Paused process", pid)
     rescue Errno::EPERM
       puts "Error: permission denied. Can't stop the process` #{pid}."
+      log_action("Error pausing process (permission denied)", pid)
     rescue => e
       puts "Error while pausing the process #{pid}: #{e.message}"
+      log_action("Error pausing process", pid)
     end
   else
     puts "Process with PID #{pid} does not exist."
+    log_action("Error pausing process (not found)", pid)
   end
 end
 
@@ -35,13 +57,17 @@ def resume_process(pid)
     begin
       Process.kill("CONT", pid.to_i)
       puts "Resumed process with PID #{pid}"
+      log_action("Resumed process", pid)
     rescue Errno::EPERM
-      puts "Error: permission denied. Can't resume the process` #{pid}."
+      puts "Error: permission denied. Can't resume the process #{pid}."
+      log_action("Error resuming process (permission denied)", pid)
     rescue => e
       puts "Error while resuming the process #{pid}: #{e.message}"
+      log_action("Error resuming process", pid)
     end
   else
     puts "Process with PID #{pid} does not exist."
+    log_action("Error resuming process (not found)", pid)
   end
 end
 
@@ -50,13 +76,17 @@ def kill_process(pid)
     begin
       Process.kill("TERM", pid.to_i)
       puts "Killed process with PID #{pid}"
+      log_action("Killed process", pid)
     rescue Errno::EPERM
       puts "Error: permission denied. Can't kill the process #{pid}."
+      log_action("Error killing process (permission denied)", pid)
     rescue => e
       puts "Error while killing the process #{pid}: #{e.message}"
+      log_action("Error killing process", pid)
     end
   else
     puts "Process with PID #{pid} does not exist."
+    log_action("Error killing process (not found)", pid)
   end
 end
 
