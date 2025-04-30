@@ -51,7 +51,7 @@ def kill_process(pid)
       Process.kill("TERM", pid.to_i)
       puts "Killed process with PID #{pid}"
     rescue Errno::EPERM
-      puts "Error: permission denied. Can't kill the process` #{pid}."
+      puts "Error: permission denied. Can't kill the process #{pid}."
     rescue => e
       puts "Error while killing the process #{pid}: #{e.message}"
     end
@@ -75,3 +75,17 @@ def show_help
   puts "  procman.rb kill 1234"
 end
 
+if ARGV.empty? || ARGV[0] == 'help'
+  show_help
+elsif ARGV[0] == 'list'
+  list_processes
+elsif ARGV[0] == 'pause' && ARGV[1]
+  pause_process(ARGV[1])
+elsif ARGV[0] == 'resume' && ARGV[1]
+  continue_process(ARGV[1])
+elsif ARGV[0] == 'kill' && ARGV[1]
+  kill_process(ARGV[1])
+else
+  puts "Command not found."
+  show_help
+end
