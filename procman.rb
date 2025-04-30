@@ -90,6 +90,19 @@ def kill_process(pid)
   end
 end
 
+def show_process_info(pid)
+  if process_exists?(pid.to_i)
+    command = "ps -p #{pid} -o pid,user,%cpu,%mem,etime,state,comm"
+    output = `#{command}`
+
+    puts output
+    log_action("Show process info", pid)
+  else
+    puts "Process with PID #{pid} does not exist."
+    log_action("Error showing process info (not found)", pid)
+  end
+end
+
 def show_help
   puts "Usage: procman.rb [command] [pid]"
   puts "Commands:"
