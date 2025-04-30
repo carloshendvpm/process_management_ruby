@@ -22,7 +22,7 @@ def process_exists?(pid)
   return false if pid <= 0
 
   begin
-    # send signal 0 to check if the process exists
+    # send signal 0 to check if the process exists does not actually send a signal
     Process.kill(0, pid)
     true
   rescue Errno::ESRCH
