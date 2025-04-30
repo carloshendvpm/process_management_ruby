@@ -118,25 +118,25 @@ def interactive_mode
   loop do
     puts "ProcManRuby - Interactive Mode"
     puts "Enter a command (list, pause, resume, kill, info, exit):"
-    command = STDIN.gets.chomp  # Changed here
+    command = STDIN.gets.chomp #fix this to use STDIN instead of gets(chomp) 
     case command
     when 'list'
       list_processes
     when 'pause'
       puts "Enter PID to pause:"
-      pid = STDIN.gets.chomp   # Changed here
+      pid = STDIN.gets.chomp
       pause_process(pid)
     when 'resume'
       puts "Enter PID to resume:"
-      pid = STDIN.gets.chomp   # Changed here
+      pid = STDIN.gets.chomp
       resume_process(pid)
     when 'kill'
       puts "Enter PID to kill:"
-      pid = STDIN.gets.chomp   # Changed here
+      pid = STDIN.gets.chomp
       kill_process(pid)
     when 'info'
       puts "Enter PID to show info:"
-      pid = STDIN.gets.chomp   # Changed here
+      pid = STDIN.gets.chomp
       show_process_info(pid)
     when 'exit'
       puts "Exiting interactive mode."
