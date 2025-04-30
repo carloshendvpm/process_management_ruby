@@ -1,6 +1,6 @@
 # ProcManRuby
 
-**ProcManRuby** é uma ferramenta simples de gerenciamento de processos para sistemas Unix-like (com foco em macOS e Linux), desenvolvida em Ruby durante o desafio do passaporte no mes de Abril. A ferramenta permite **listar processos**, **pausar**, **continuar (resumir)** e **matar** processos usando apenas o **PID**, além de manter um **registro completo das ações** em um arquivo de log.
+**ProcManRuby** é uma ferramenta simples de gerenciamento de processos para sistemas Unix-like (com foco em macOS e Linux), desenvolvida em Ruby durante o desafio do passaporte da [Real Seguro Viagem](https://www.seguroviagem.srv.br/) no mes de Abril. A ferramenta permite **listar processos**, **pausar**, **continuar (resumir)** e **matar** processos usando apenas o **PID**, além de manter um **registro completo das ações** em um arquivo de log.
 
 ---
 
