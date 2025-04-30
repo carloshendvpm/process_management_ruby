@@ -18,11 +18,17 @@ def log_action(action, pid = nil)
 end
 
 def process_exists?(pid)
+  pid = pid.to_i
+  return false if pid <= 0
+
   begin
-    Process.getpgid(pid)
+    # send signal 0 to check if the process exists
+    Process.kill(0, pid)
     true
   rescue Errno::ESRCH
-    false
+    false 
+  rescue Errno::EPERM
+    true 
   end
 end
 
@@ -92,14 +98,54 @@ end
 
 def show_process_info(pid)
   if process_exists?(pid.to_i)
-    command = "ps -p #{pid} -o pid,user,%cpu,%mem,etime,state,comm"
+    command = "ps -p #{pid} -o pid,user,%cpu,%mem,etime,state,args"
     output = `#{command}`
 
-    puts output
-    log_action("Show process info", pid)
+    if output.empty? || output.include?("ERROR")
+      puts "Failed to retrieve information for PID #{pid}. It might be a kernel thread, zombie, or incompatible system."
+      log_action("Error showing process info (no data)", pid)
+    else
+      puts output
+      log_action("Show process info", pid)
+    end
   else
     puts "Process with PID #{pid} does not exist."
     log_action("Error showing process info (not found)", pid)
+  end
+end
+
+def interactive_mode
+  loop do
+    puts "ProcManRuby - Interactive Mode"
+    puts "Enter a command (list, pause, resume, kill, info, exit):"
+    command = STDIN.gets.chomp  # Changed here
+    case command
+    when 'list'
+      list_processes
+    when 'pause'
+      puts "Enter PID to pause:"
+      pid = STDIN.gets.chomp   # Changed here
+      pause_process(pid)
+    when 'resume'
+      puts "Enter PID to resume:"
+      pid = STDIN.gets.chomp   # Changed here
+      resume_process(pid)
+    when 'kill'
+      puts "Enter PID to kill:"
+      pid = STDIN.gets.chomp   # Changed here
+      kill_process(pid)
+    when 'info'
+      puts "Enter PID to show info:"
+      pid = STDIN.gets.chomp   # Changed here
+      show_process_info(pid)
+    when 'exit'
+      puts "Exiting interactive mode."
+      log_action("Exited interactive mode")
+      break
+    else
+      puts "Unknown command."
+      puts "Available commands: list, pause, resume, kill, info, exit"
+    end
   end
 end
 
@@ -125,9 +171,14 @@ elsif ARGV[0] == 'list'
 elsif ARGV[0] == 'pause' && ARGV[1]
   pause_process(ARGV[1])
 elsif ARGV[0] == 'resume' && ARGV[1]
-  continue_process(ARGV[1])
+  resume_process(ARGV[1])
 elsif ARGV[0] == 'kill' && ARGV[1]
   kill_process(ARGV[1])
+elsif ARGV[0] == 'info' && ARGV[1]
+  show_process_info(ARGV[1])
+elsif ARGV[0] == 'interactive'
+  log_action("Entered interactive mode")
+  interactive_mode
 else
   puts "Command not found."
   show_help
